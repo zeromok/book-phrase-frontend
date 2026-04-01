@@ -11,10 +11,9 @@ export default function PhraseCard({ phrase }) {
     if (flipped || loading) return
     setLoading(true)
     try {
-      // view는 실패해도 reveal은 진행 (비로그인 또는 토큰 만료 대응)
       viewPhrase(phrase.id).catch(() => {})
       const res = await revealPhrase(phrase.id)
-      setBook(res.data)
+      setBook(res.data.book)
       setFlipped(true)
     } catch (e) {
       console.error(e)
@@ -66,17 +65,27 @@ export default function PhraseCard({ phrase }) {
                 <h2 className="text-2xl font-medium tracking-tight">{book.title}</h2>
                 <p className="text-stone-400 mt-1">{book.author}</p>
               </div>
-              <div className="flex justify-between items-end">
-                <p className="text-stone-500 text-sm">{book.publisher}</p>
-                {book.externalLink && (
+              <div className="flex justify-end gap-2 items-end">
+                {book.purchaseLinks?.aladin && (
                   <a
-                    href={book.externalLink}
+                    href={book.purchaseLinks.aladin}
                     target="_blank"
                     rel="noreferrer"
                     onClick={(e) => e.stopPropagation()}
                     className="text-xs bg-stone-700 hover:bg-stone-600 px-4 py-2 rounded-full transition-colors"
                   >
-                    구매하기 →
+                    알라딘 →
+                  </a>
+                )}
+                {book.purchaseLinks?.yes24 && (
+                  <a
+                    href={book.purchaseLinks.yes24}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-xs bg-stone-700 hover:bg-stone-600 px-4 py-2 rounded-full transition-colors"
+                  >
+                    Yes24 →
                   </a>
                 )}
               </div>
