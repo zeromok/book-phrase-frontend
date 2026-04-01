@@ -11,7 +11,9 @@ export default function PhraseCard({ phrase }) {
     if (flipped || loading) return
     setLoading(true)
     try {
-      viewPhrase(phrase.id).catch(() => {})
+      if (localStorage.getItem('token')) {
+        viewPhrase(phrase.id).catch(() => {})
+      }
       const res = await revealPhrase(phrase.id)
       setBook(res.data.book)
       setFlipped(true)
