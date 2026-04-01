@@ -11,7 +11,8 @@ export default function PhraseCard({ phrase }) {
     if (flipped || loading) return
     setLoading(true)
     try {
-      await viewPhrase(phrase.id)
+      // view는 실패해도 reveal은 진행 (비로그인 또는 토큰 만료 대응)
+      viewPhrase(phrase.id).catch(() => {})
       const res = await revealPhrase(phrase.id)
       setBook(res.data)
       setFlipped(true)
@@ -40,19 +41,9 @@ export default function PhraseCard({ phrase }) {
           style={{ backfaceVisibility: 'hidden' }}
         >
           <p className="text-stone-800 text-xl leading-relaxed font-light tracking-wide">
-            "{phrase.content}"
+            "{phrase.text}"
           </p>
-          <div className="flex justify-between items-center mt-6">
-            <div className="flex gap-2 flex-wrap">
-              {phrase.tags?.map((tag) => (
-                <span
-                  key={tag}
-                  className="text-xs text-stone-400 border border-stone-200 rounded-full px-3 py-1"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+          <div className="flex justify-end items-center mt-6">
             {loading ? (
               <span className="text-xs text-stone-300">불러오는 중...</span>
             ) : (
@@ -70,7 +61,7 @@ export default function PhraseCard({ phrase }) {
             <>
               <div>
                 <p className="text-stone-300 text-sm mb-4 leading-relaxed font-light">
-                  "{phrase.content}"
+                  "{phrase.text}"
                 </p>
                 <h2 className="text-2xl font-medium tracking-tight">{book.title}</h2>
                 <p className="text-stone-400 mt-1">{book.author}</p>
