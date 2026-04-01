@@ -14,7 +14,7 @@ export default function LoginPage() {
     setError('')
     try {
       const res = await login(form)
-      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('token', res.data.accessToken)
       navigate('/')
     } catch (err) {
       setError(err.response?.data?.message || '로그인에 실패했습니다.')
