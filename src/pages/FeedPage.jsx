@@ -31,15 +31,16 @@ export default function FeedPage() {
   return (
     <div className="min-h-screen bg-stone-100">
       {/* 헤더 */}
-      <header className="sticky top-0 bg-stone-100/80 backdrop-blur-sm z-10 px-6 py-4 border-b border-stone-200">
-        <h1 className="text-lg font-medium text-stone-700 tracking-tight">
-          O:GU <span className="text-stone-400 font-normal text-sm">(오구, 오늘의 구절)</span>
-        </h1>
-        <p className="text-xs text-stone-400 mt-0.5">문구로 책을 발견하세요</p>
-      </header>
+        <header className="sticky top-0 bg-stone-100/80 backdrop-blur-sm z-10 px-6 py-4 border-b border-stone-200">
+            <h1 className="text-lg font-medium text-stone-700 tracking-tight">
+                O:GU <span className="text-stone-400 font-normal text-sm">(오구, 오늘의 구절)</span>
+            </h1>
+            <p className="text-xs text-stone-400 mt-0.5">문구로 책을 발견하세요</p>
+            <meta name="google-adsense-account" content="ca-pub-4320086350757226"/>
+        </header>
 
-      {/* 태그 필터 */}
-      <div className="flex gap-2 px-6 py-4 overflow-x-auto scrollbar-hide">
+        {/* 태그 필터 */}
+        <div className="flex gap-2 px-6 py-4 overflow-x-auto scrollbar-hide">
         <button
           onClick={() => setSelectedTag(null)}
           className={`shrink-0 text-sm px-4 py-1.5 rounded-full border transition-colors ${
