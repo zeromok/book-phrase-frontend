@@ -36,8 +36,10 @@
 `.env.local` 파일을 생성하고 아래 값을 설정하세요.
 
 ```env
-VITE_API_BASE_URL=https://book-phrase-production.up.railway.app
+VITE_API_BASE_URL=https://your-backend-url
 ```
+
+> 실제 백엔드 URL은 팀 내부에서 공유합니다.
 
 ---
 
