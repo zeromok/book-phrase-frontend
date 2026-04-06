@@ -24,7 +24,10 @@ export default function FeedPage() {
     <div className="min-h-screen bg-stone-100">
       {/* 헤더 */}
       <header className="sticky top-0 bg-stone-100/80 backdrop-blur-sm z-10 px-6 py-4 border-b border-stone-200">
-        <h1 className="text-lg font-medium text-stone-700 tracking-tight">O:GU</h1>
+        <h1 className="text-lg font-medium text-stone-700 tracking-tight">
+          O:GU <span className="text-stone-400 font-normal text-sm">(오구, 오늘의 구절)</span>
+        </h1>
+        <p className="text-xs text-stone-400 mt-0.5">문구로 책을 발견하세요</p>
       </header>
 
       {/* 태그 필터 */}
