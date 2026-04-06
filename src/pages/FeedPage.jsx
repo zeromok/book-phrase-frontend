@@ -69,6 +69,19 @@ export default function FeedPage() {
           ))
         )}
       </main>
+
+      {/* 피드백 플로팅 버튼 */}
+      <button
+        data-tally-open="ODYx6R"
+        data-tally-layout="modal"
+        data-tally-align-left="1"
+        data-tally-emoji-text="💬"
+        data-tally-emoji-animation="wave"
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-1.5 bg-stone-800 text-stone-100 text-sm px-4 py-2.5 rounded-full shadow-lg hover:bg-stone-700 transition-colors"
+      >
+        <span>💬</span>
+        <span>피드백</span>
+      </button>
     </div>
   )
 }
