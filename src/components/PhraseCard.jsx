@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { revealPhrase, viewPhrase } from '../api/phraseApi'
+import { revealPhrase } from '../api/phraseApi'
 
 export default function PhraseCard({ phrase }) {
   const [flipped, setFlipped] = useState(false)
@@ -11,9 +11,6 @@ export default function PhraseCard({ phrase }) {
     if (flipped || loading) return
     setLoading(true)
     try {
-      if (localStorage.getItem('token')) {
-        viewPhrase(phrase.id).catch(() => {})
-      }
       const res = await revealPhrase(phrase.id)
       setBook(res.data.book)
       setFlipped(true)
