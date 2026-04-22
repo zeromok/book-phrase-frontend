@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { revealPhrase } from '../api/phraseApi'
+import ShareCardOverlay from './ShareCardOverlay'
 
 export default function PhraseCard({ phrase }) {
   const [flipped, setFlipped] = useState(false)
   const [book, setBook] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [showShare, setShowShare] = useState(false)
 
   const handleFlip = async () => {
     if (flipped || loading) return
@@ -21,77 +23,98 @@ export default function PhraseCard({ phrase }) {
     }
   }
 
+  const handleShare = (e) => {
+    e.stopPropagation()
+    setShowShare(true)
+  }
+
   return (
-    <div
-      className="relative w-full cursor-pointer"
-      style={{ perspective: '1200px' }}
-      onClick={handleFlip}
-    >
-      <motion.div
-        className="relative w-full"
-        style={{ transformStyle: 'preserve-3d' }}
-        animate={{ rotateY: flipped ? 180 : 0 }}
-        transition={{ duration: 0.6, ease: 'easeInOut' }}
+    <>
+      <div
+        className="relative w-full cursor-pointer"
+        style={{ perspective: '1200px' }}
+        onClick={handleFlip}
       >
-        {/* 앞면: 문구 */}
-        <div
-          className="w-full min-h-64 bg-stone-50 border border-stone-200 rounded-2xl p-8 flex flex-col justify-between"
-          style={{ backfaceVisibility: 'hidden' }}
+        <motion.div
+          className="relative w-full"
+          style={{ transformStyle: 'preserve-3d' }}
+          animate={{ rotateY: flipped ? 180 : 0 }}
+          transition={{ duration: 0.6, ease: 'easeInOut' }}
         >
-          <p className="text-stone-800 text-xl leading-relaxed font-light tracking-wide">
-            "{phrase.text}"
-          </p>
-          <div className="flex justify-end items-center mt-6">
-            {loading ? (
-              <span className="text-xs text-stone-300">불러오는 중...</span>
-            ) : (
-              <span className="text-xs text-stone-300">탭해서 책 보기 →</span>
+          {/* 앞면: 문구 */}
+          <div
+            className="w-full min-h-64 bg-stone-50 border border-stone-200 rounded-2xl p-8 flex flex-col justify-between"
+            style={{ backfaceVisibility: 'hidden' }}
+          >
+            <p className="text-stone-800 text-xl leading-relaxed font-light tracking-wide">
+              "{phrase.text}"
+            </p>
+            <div className="flex justify-end items-center mt-6">
+              {loading ? (
+                <span className="text-xs text-stone-300">불러오는 중...</span>
+              ) : (
+                <span className="text-xs text-stone-300">탭해서 책 보기 →</span>
+              )}
+            </div>
+          </div>
+
+          {/* 뒷면: 책 정보 */}
+          <div
+            className="absolute inset-0 w-full min-h-64 bg-stone-800 text-stone-50 rounded-2xl p-8 flex flex-col justify-between"
+            style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+          >
+            {book && (
+              <>
+                <div>
+                  <p className="text-stone-300 text-sm mb-4 leading-relaxed font-light">
+                    "{phrase.text}"
+                  </p>
+                  <h2 className="text-2xl font-medium tracking-tight">{book.title}</h2>
+                  <p className="text-stone-400 mt-1">{book.author}</p>
+                </div>
+                <div className="flex justify-end gap-2 items-end">
+                  <button
+                    onClick={handleShare}
+                    className="text-xs bg-stone-600 hover:bg-stone-500 px-4 py-2 rounded-full transition-colors"
+                  >
+                    공유
+                  </button>
+                  {book.purchaseLinks?.aladin && (
+                    <a
+                      href={book.purchaseLinks.aladin}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-xs bg-stone-700 hover:bg-stone-600 px-4 py-2 rounded-full transition-colors"
+                    >
+                      알라딘 →
+                    </a>
+                  )}
+                  {book.purchaseLinks?.yes24 && (
+                    <a
+                      href={book.purchaseLinks.yes24}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-xs bg-stone-700 hover:bg-stone-600 px-4 py-2 rounded-full transition-colors"
+                    >
+                      Yes24 →
+                    </a>
+                  )}
+                </div>
+              </>
             )}
           </div>
-        </div>
+        </motion.div>
+      </div>
 
-        {/* 뒷면: 책 정보 */}
-        <div
-          className="absolute inset-0 w-full min-h-64 bg-stone-800 text-stone-50 rounded-2xl p-8 flex flex-col justify-between"
-          style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
-        >
-          {book && (
-            <>
-              <div>
-                <p className="text-stone-300 text-sm mb-4 leading-relaxed font-light">
-                  "{phrase.text}"
-                </p>
-                <h2 className="text-2xl font-medium tracking-tight">{book.title}</h2>
-                <p className="text-stone-400 mt-1">{book.author}</p>
-              </div>
-              <div className="flex justify-end gap-2 items-end">
-                {book.purchaseLinks?.aladin && (
-                  <a
-                    href={book.purchaseLinks.aladin}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-xs bg-stone-700 hover:bg-stone-600 px-4 py-2 rounded-full transition-colors"
-                  >
-                    알라딘 →
-                  </a>
-                )}
-                {book.purchaseLinks?.yes24 && (
-                  <a
-                    href={book.purchaseLinks.yes24}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-xs bg-stone-700 hover:bg-stone-600 px-4 py-2 rounded-full transition-colors"
-                  >
-                    Yes24 →
-                  </a>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      </motion.div>
-    </div>
+      {showShare && book && (
+        <ShareCardOverlay
+          phrase={phrase}
+          book={book}
+          onClose={() => setShowShare(false)}
+        />
+      )}
+    </>
   )
 }

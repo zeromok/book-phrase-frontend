@@ -1,24 +1,79 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { getFeed, getTags } from '../api/phraseApi'
 import PhraseCard from '../components/PhraseCard'
+
+function generateSeed() {
+  return Math.floor(Math.random() * 2147483647)
+}
 
 export default function FeedPage() {
   const [phrases, setPhrases] = useState([])
   const [tags, setTags] = useState([])
   const [selectedTag, setSelectedTag] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasNext, setHasNext] = useState(false)
 
+  const seedRef = useRef(generateSeed())
+  const pageRef = useRef(0)
+  const observerRef = useRef(null)
+  const sentinelRef = useRef(null)
+
+  // 태그 로드
   useEffect(() => {
     getTags().then((res) => setTags(res.data))
   }, [])
 
+  // 태그 변경 시 리셋 & 첫 페이지 로드
   useEffect(() => {
+    seedRef.current = generateSeed()
+    pageRef.current = 0
+    setPhrases([])
+    setHasNext(false)
     setLoading(true)
-    getFeed(selectedTag)
-      .then((res) => setPhrases(res.data))
+
+    getFeed(selectedTag, seedRef.current, 0)
+      .then((res) => {
+        setPhrases(res.data.phrases)
+        setHasNext(res.data.hasNext)
+        pageRef.current = 1
+      })
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [selectedTag])
+
+  // 다음 페이지 로드
+  const loadMore = useCallback(() => {
+    if (loadingMore || !hasNext) return
+    setLoadingMore(true)
+
+    getFeed(selectedTag, seedRef.current, pageRef.current)
+      .then((res) => {
+        setPhrases((prev) => [...prev, ...res.data.phrases])
+        setHasNext(res.data.hasNext)
+        pageRef.current += 1
+      })
+      .catch(console.error)
+      .finally(() => setLoadingMore(false))
+  }, [selectedTag, loadingMore, hasNext])
+
+  // IntersectionObserver로 하단 감지
+  useEffect(() => {
+    if (observerRef.current) observerRef.current.disconnect()
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) loadMore()
+      },
+      { rootMargin: '200px' }
+    )
+
+    if (sentinelRef.current) {
+      observerRef.current.observe(sentinelRef.current)
+    }
+
+    return () => observerRef.current?.disconnect()
+  }, [loadMore])
 
   const openFeedback = () => {
     if (window.Tally) {
@@ -31,16 +86,16 @@ export default function FeedPage() {
   return (
     <div className="min-h-screen bg-stone-100">
       {/* 헤더 */}
-        <header className="sticky top-0 bg-stone-100/80 backdrop-blur-sm z-10 px-6 py-4 border-b border-stone-200">
-            <h1 className="text-lg font-medium text-stone-700 tracking-tight">
-                O:GU <span className="text-stone-400 font-normal text-sm">(오구, 오늘의 구절)</span>
-            </h1>
-            <p className="text-xs text-stone-400 mt-0.5">문구로 책을 발견하세요</p>
-            <meta name="google-adsense-account" content="ca-pub-4320086350757226"/>
-        </header>
+      <header className="sticky top-0 bg-stone-100/80 backdrop-blur-sm z-10 px-6 py-4 border-b border-stone-200">
+        <h1 className="text-lg font-medium text-stone-700 tracking-tight">
+          O:GU <span className="text-stone-400 font-normal text-sm">(오구, 오늘의 구절)</span>
+        </h1>
+        <p className="text-xs text-stone-400 mt-0.5">문구로 책을 발견하세요</p>
+        <meta name="google-adsense-account" content="ca-pub-4320086350757226" />
+      </header>
 
-        {/* 태그 필터 */}
-        <div className="flex gap-2 px-6 py-4 overflow-x-auto scrollbar-hide">
+      {/* 태그 필터 */}
+      <div className="flex gap-2 px-6 py-4 overflow-x-auto scrollbar-hide">
         <button
           onClick={() => setSelectedTag(null)}
           className={`shrink-0 text-sm px-4 py-1.5 rounded-full border transition-colors ${
@@ -73,9 +128,22 @@ export default function FeedPage() {
         ) : phrases.length === 0 ? (
           <div className="pt-20 text-center text-stone-400">오늘의 문구가 없어요</div>
         ) : (
-          phrases.map((phrase) => (
-            <PhraseCard key={phrase.id} phrase={phrase} />
-          ))
+          <>
+            {phrases.map((phrase) => (
+              <PhraseCard key={phrase.id} phrase={phrase} />
+            ))}
+
+            {/* 무한 스크롤 감지 요소 */}
+            <div ref={sentinelRef} className="h-1" />
+
+            {loadingMore && (
+              <div className="py-6 text-center text-stone-400 text-sm">더 불러오는 중...</div>
+            )}
+
+            {!hasNext && phrases.length > 0 && (
+              <div className="py-6 text-center text-stone-300 text-xs">모든 문구를 불러왔어요</div>
+            )}
+          </>
         )}
       </main>
 
