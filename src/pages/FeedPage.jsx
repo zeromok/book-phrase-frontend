@@ -16,6 +16,7 @@ export default function FeedPage() {
 
   const seedRef = useRef(generateSeed())
   const pageRef = useRef(0)
+  const loadingRef = useRef(false) // ref로 중복 호출 방지
   const observerRef = useRef(null)
   const sentinelRef = useRef(null)
 
@@ -28,6 +29,7 @@ export default function FeedPage() {
   useEffect(() => {
     seedRef.current = generateSeed()
     pageRef.current = 0
+    loadingRef.current = false
     setPhrases([])
     setHasNext(false)
     setLoading(true)
@@ -42,20 +44,30 @@ export default function FeedPage() {
       .finally(() => setLoading(false))
   }, [selectedTag])
 
-  // 다음 페이지 로드
+  // 다음 페이지 로드 — ref로 guard하여 중복 호출 방지
   const loadMore = useCallback(() => {
-    if (loadingMore || !hasNext) return
+    if (loadingRef.current) return
+    loadingRef.current = true
     setLoadingMore(true)
 
     getFeed(selectedTag, seedRef.current, pageRef.current)
       .then((res) => {
-        setPhrases((prev) => [...prev, ...res.data.phrases])
+        const newPhrases = res.data.phrases
+        setPhrases((prev) => {
+          // ID 기반 중복 제거
+          const existingIds = new Set(prev.map((p) => p.id))
+          const unique = newPhrases.filter((p) => !existingIds.has(p.id))
+          return [...prev, ...unique]
+        })
         setHasNext(res.data.hasNext)
         pageRef.current += 1
       })
       .catch(console.error)
-      .finally(() => setLoadingMore(false))
-  }, [selectedTag, loadingMore, hasNext])
+      .finally(() => {
+        loadingRef.current = false
+        setLoadingMore(false)
+      })
+  }, [selectedTag])
 
   // IntersectionObserver로 하단 감지
   useEffect(() => {
@@ -63,7 +75,7 @@ export default function FeedPage() {
 
     observerRef.current = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) loadMore()
+        if (entries[0].isIntersecting && !loadingRef.current) loadMore()
       },
       { rootMargin: '200px' }
     )
