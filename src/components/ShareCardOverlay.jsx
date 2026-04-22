@@ -132,9 +132,13 @@ export default function ShareCardOverlay({ phrase, book, onClose }) {
       const file = new File([blob], 'ogu-phrase.png', { type: 'image/png' })
 
       // 모바일: 네이티브 공유
+      const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin
+
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
         await navigator.share({
-          title: `"${phrase.text.slice(0, 30)}..." — O:GU`,
+          title: `"${phrase.text}" — O:GU`,
+          text: `"${phrase.text}"\n— ${book.title}, ${book.author}\n\n`,
+          url: siteUrl,
           files: [file],
         })
       } else {
