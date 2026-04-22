@@ -136,8 +136,6 @@ export default function ShareCardOverlay({ phrase, book, onClose }) {
 
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
         await navigator.share({
-          title: `"${phrase.text}" — O:GU`,
-          text: `"${phrase.text}"\n— ${book.title}, ${book.author}\n\n`,
           url: siteUrl,
           files: [file],
         })
