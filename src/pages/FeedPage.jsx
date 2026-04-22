@@ -16,9 +16,9 @@ export default function FeedPage() {
 
   const seedRef = useRef(generateSeed())
   const pageRef = useRef(0)
-  const loadingRef = useRef(false) // ref로 중복 호출 방지
+  const loadingRef = useRef(false)
+  const hasNextRef = useRef(false)
   const observerRef = useRef(null)
-  const sentinelRef = useRef(null)
 
   // 태그 로드
   useEffect(() => {
@@ -30,6 +30,7 @@ export default function FeedPage() {
     seedRef.current = generateSeed()
     pageRef.current = 0
     loadingRef.current = false
+    hasNextRef.current = false
     setPhrases([])
     setHasNext(false)
     setLoading(true)
@@ -38,6 +39,7 @@ export default function FeedPage() {
       .then((res) => {
         setPhrases(res.data.phrases)
         setHasNext(res.data.hasNext)
+        hasNextRef.current = res.data.hasNext
         pageRef.current = 1
       })
       .catch(console.error)
@@ -46,7 +48,7 @@ export default function FeedPage() {
 
   // 다음 페이지 로드 — ref로 guard하여 중복 호출 방지
   const loadMore = useCallback(() => {
-    if (loadingRef.current) return
+    if (loadingRef.current || !hasNextRef.current) return
     loadingRef.current = true
     setLoadingMore(true)
 
@@ -54,12 +56,12 @@ export default function FeedPage() {
       .then((res) => {
         const newPhrases = res.data.phrases
         setPhrases((prev) => {
-          // ID 기반 중복 제거
           const existingIds = new Set(prev.map((p) => p.id))
           const unique = newPhrases.filter((p) => !existingIds.has(p.id))
           return [...prev, ...unique]
         })
         setHasNext(res.data.hasNext)
+        hasNextRef.current = res.data.hasNext
         pageRef.current += 1
       })
       .catch(console.error)
@@ -69,23 +71,24 @@ export default function FeedPage() {
       })
   }, [selectedTag])
 
-  // IntersectionObserver로 하단 감지
-  useEffect(() => {
-    if (observerRef.current) observerRef.current.disconnect()
+  // IntersectionObserver — callback ref로 sentinel이 DOM에 나타날 때 자동 연결
+  const sentinelRef = useCallback(
+    (node) => {
+      if (observerRef.current) observerRef.current.disconnect()
+      if (!node) return
 
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loadingRef.current) loadMore()
-      },
-      { rootMargin: '200px' }
-    )
-
-    if (sentinelRef.current) {
-      observerRef.current.observe(sentinelRef.current)
-    }
-
-    return () => observerRef.current?.disconnect()
-  }, [loadMore])
+      observerRef.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && !loadingRef.current && hasNextRef.current) {
+            loadMore()
+          }
+        },
+        { rootMargin: '200px' }
+      )
+      observerRef.current.observe(node)
+    },
+    [loadMore]
+  )
 
   const openFeedback = () => {
     if (window.Tally) {
