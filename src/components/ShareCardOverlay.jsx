@@ -132,7 +132,7 @@ export default function ShareCardOverlay({ phrase, book, onClose }) {
       const file = new File([blob], 'ogu-phrase.png', { type: 'image/png' })
 
       // 모바일: 네이티브 공유
-      const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin
+      const siteUrl = 'https://www.todayogu.com'
 
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
         await navigator.share({
