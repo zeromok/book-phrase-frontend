@@ -5,6 +5,9 @@ export const getFeed = (tagId, seed, page = 0, size = 10) =>
     params: { ...(tagId ? { tagId } : {}), seed, page, size },
   })
 
+export const getDaily = () =>
+  client.get('/api/v1/phrases/daily')
+
 export const revealPhrase = (phraseId) =>
   client.get(`/api/v1/phrases/${phraseId}/reveal`)
 
