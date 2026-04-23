@@ -20,20 +20,21 @@ export default function DailyPhrase() {
   return (
     <>
       <div
-        className="mx-6 mt-4 mb-2 rounded-2xl p-6 cursor-pointer"
+        className="mx-6 mt-4 rounded-2xl p-8 cursor-pointer"
         style={{ background: 'linear-gradient(135deg, #292524, #44403c)' }}
         onClick={() => setShowDetail(true)}
       >
-        <p className="text-stone-500 text-xs font-medium tracking-widest mb-3">
-          TODAY
+        <p className="text-stone-500 text-xs font-medium tracking-widest mb-4">
+          오늘의 추천 문구
         </p>
-        <p className="text-stone-200 text-lg leading-relaxed font-light">
+        <p className="text-stone-200 text-2xl leading-relaxed font-light">
           "{data.text}"
         </p>
-        <div className="flex justify-end mt-4">
+        <div className="flex justify-end mt-6">
           <span className="text-xs text-stone-500">탭해서 책 보기 →</span>
         </div>
       </div>
+      <div className="mx-6 mt-6 border-b border-stone-200" />
 
       {showDetail && (
         <BookDetailOverlay

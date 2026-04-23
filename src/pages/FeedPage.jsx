@@ -24,8 +24,8 @@ export default function FeedPage() {
   const observerRef = useRef(null)
 
   const selectedTagName = selectedTag === null
-    ? '전체'
-    : tags.find((t) => t.id === selectedTag)?.name || '전체'
+    ? '감정 태그'
+    : tags.find((t) => t.id === selectedTag)?.name || '감정 태그'
 
   // 태그 로드
   useEffect(() => {
