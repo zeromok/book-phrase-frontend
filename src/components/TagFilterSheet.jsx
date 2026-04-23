@@ -50,7 +50,7 @@ export default function TagFilterSheet({ open, tags, selectedTag, onSelect, onCl
                       : 'bg-transparent text-stone-500 border-stone-300'
                   }`}
                 >
-                  {tag.name}
+                  {tag.emoji && <span>{tag.emoji}</span>} {tag.name}
                 </button>
               ))}
             </div>
