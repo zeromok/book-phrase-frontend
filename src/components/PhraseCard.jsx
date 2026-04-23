@@ -55,17 +55,17 @@ export default function PhraseCard({ phrase }) {
 
           {/* 뒷면: 책 정보 — 독립적인 클릭 영역 */}
           <div
-            className="absolute inset-0 w-full min-h-64 bg-stone-800 text-stone-50 rounded-2xl p-8 flex flex-col justify-between"
+            className="absolute inset-0 w-full min-h-64 bg-stone-800 text-stone-50 rounded-2xl p-8 flex flex-col justify-between overflow-hidden"
             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
           >
             {book && (
               <>
-                <div>
-                  <p className="text-stone-300 text-sm mb-4 leading-relaxed font-light">
+                <div className="min-w-0">
+                  <p className="text-stone-300 text-sm mb-4 leading-relaxed font-light line-clamp-3">
                     "{phrase.text}"
                   </p>
-                  <h2 className="text-2xl font-medium tracking-tight">{book.title}</h2>
-                  <p className="text-stone-400 mt-1">{book.author}</p>
+                  <h2 className="text-2xl font-medium tracking-tight line-clamp-2">{book.title}</h2>
+                  <p className="text-stone-400 mt-1 truncate">{book.author}</p>
                 </div>
                 <div className="flex justify-end gap-2 items-end">
                   <button
