@@ -70,11 +70,11 @@ export default function PhraseCard({ phrase }) {
             {book && (
               <>
                 <div className="min-w-0">
-                  <h2 className="text-xl font-medium tracking-tight line-clamp-2">{book.title}</h2>
-                  <p className="text-stone-400 text-sm mt-1 truncate">{book.author}</p>
-                  <p className="text-stone-400 text-xs mt-3 leading-relaxed line-clamp-3">
+                  <p className="text-stone-300 text-sm leading-relaxed font-light line-clamp-3">
                     "{phrase.text}"
                   </p>
+                  <h2 className="text-lg font-medium tracking-tight mt-4 line-clamp-2">{book.title}</h2>
+                  <p className="text-stone-400 text-sm mt-1 truncate">{book.author}</p>
                 </div>
                 <div className="flex justify-end items-center mt-4">
                   <span className="text-xs text-stone-500">탭해서 다시 보기 →</span>
