@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { getDaily } from '../api/phraseApi'
 import BookDetailOverlay from './BookDetailOverlay'
+import { useReadability } from '../contexts/ReadabilityContext'
 
 export default function DailyPhrase() {
   const [data, setData] = useState(null)
   const [showDetail, setShowDetail] = useState(false)
+  const { phraseWeight } = useReadability()
 
   useEffect(() => {
     getDaily()
@@ -27,7 +29,7 @@ export default function DailyPhrase() {
         <p className="text-stone-500 text-xs font-medium tracking-widest mb-4">
           오늘의 추천 문구
         </p>
-        <p className="text-stone-200 text-2xl leading-relaxed font-light">
+        <p className={`text-stone-200 text-2xl leading-relaxed ${phraseWeight}`}>
           "{data.text}"
         </p>
         <div className="flex justify-end mt-6">

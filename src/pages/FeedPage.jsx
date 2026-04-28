@@ -3,6 +3,7 @@ import { getFeed, getTags } from '../api/phraseApi'
 import PhraseCard from '../components/PhraseCard'
 import DailyPhrase from '../components/DailyPhrase'
 import TagFilterSheet from '../components/TagFilterSheet'
+import { useReadability } from '../contexts/ReadabilityContext'
 
 function generateSeed() {
   return Math.floor(Math.random() * 2147483647)
@@ -16,6 +17,7 @@ export default function FeedPage() {
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasNext, setHasNext] = useState(false)
   const [filterOpen, setFilterOpen] = useState(false)
+  const { bold, toggle } = useReadability()
 
   const seedRef = useRef(generateSeed())
   const pageRef = useRef(0)
@@ -116,17 +118,30 @@ export default function FeedPage() {
             </h1>
             <p className="text-xs text-stone-400 mt-0.5">문구로 책을 발견하세요</p>
           </div>
-          <button
-            onClick={() => setFilterOpen(true)}
-            className="flex items-center gap-1.5 text-sm text-stone-500 px-3 py-1.5 rounded-full border border-stone-300 hover:border-stone-400 transition-colors"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="4" y1="6" x2="20" y2="6" />
-              <line x1="8" y1="12" x2="16" y2="12" />
-              <line x1="11" y1="18" x2="13" y2="18" />
-            </svg>
-            {selectedTagName}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggle}
+              aria-label="글자 굵기 전환"
+              className={`flex items-center justify-center w-8 h-8 rounded-full border transition-colors ${
+                bold
+                  ? 'bg-stone-800 text-stone-100 border-stone-800'
+                  : 'bg-transparent text-stone-500 border-stone-300 hover:border-stone-400'
+              }`}
+            >
+              <span className={`text-sm leading-none ${bold ? 'font-semibold' : 'font-light'}`}>Aa</span>
+            </button>
+            <button
+              onClick={() => setFilterOpen(true)}
+              className="flex items-center gap-1.5 text-sm text-stone-500 px-3 py-1.5 rounded-full border border-stone-300 hover:border-stone-400 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6" />
+                <line x1="8" y1="12" x2="16" y2="12" />
+                <line x1="11" y1="18" x2="13" y2="18" />
+              </svg>
+              {selectedTagName}
+            </button>
+          </div>
         </div>
         <meta name="google-adsense-account" content="ca-pub-4320086350757226" />
       </header>

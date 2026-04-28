@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { revealPhrase } from '../api/phraseApi'
+import { useReadability } from '../contexts/ReadabilityContext'
 
 export default function PhrasePage() {
   const { id } = useParams()
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const { phraseWeight } = useReadability()
 
   useEffect(() => {
     revealPhrase(id)
@@ -52,7 +54,7 @@ export default function PhrasePage() {
               />
             </div>
           )}
-          <p className="text-stone-200 text-xl leading-relaxed font-light text-center">
+          <p className={`text-stone-200 text-xl leading-relaxed ${phraseWeight} text-center`}>
             "{text}"
           </p>
           <div className="text-center">

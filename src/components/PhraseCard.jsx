@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { revealPhrase } from '../api/phraseApi'
 import BookDetailOverlay from './BookDetailOverlay'
+import { useReadability } from '../contexts/ReadabilityContext'
 
 export default function PhraseCard({ phrase }) {
   const [flipped, setFlipped] = useState(false)
   const [book, setBook] = useState(null)
   const [loading, setLoading] = useState(false)
   const [showDetail, setShowDetail] = useState(false)
+  const { phraseWeight } = useReadability()
 
   const handleTap = async () => {
     if (loading) return
@@ -50,7 +52,7 @@ export default function PhraseCard({ phrase }) {
             className="w-full min-h-48 bg-stone-50 border border-stone-200 rounded-2xl p-6 flex flex-col justify-between"
             style={{ backfaceVisibility: 'hidden' }}
           >
-            <p className="text-stone-800 text-lg leading-relaxed font-light tracking-wide">
+            <p className={`text-stone-800 text-lg leading-relaxed ${phraseWeight} tracking-wide`}>
               "{phrase.text}"
             </p>
             <div className="flex justify-end items-center mt-4">
@@ -70,7 +72,7 @@ export default function PhraseCard({ phrase }) {
             {book && (
               <>
                 <div className="min-w-0">
-                  <p className="text-stone-300 text-sm leading-relaxed font-light line-clamp-3">
+                  <p className={`text-stone-300 text-sm leading-relaxed ${phraseWeight} line-clamp-3`}>
                     "{phrase.text}"
                   </p>
                   <h2 className="text-lg font-medium tracking-tight mt-4 line-clamp-2">{book.title}</h2>

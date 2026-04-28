@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { generateShareImage } from '../utils/shareImage'
+import { useReadability } from '../contexts/ReadabilityContext'
 
 export default function BookDetailOverlay({ phrase, book, onClose }) {
   const [sharing, setSharing] = useState(false)
+  const { phraseWeight } = useReadability()
 
   const handleShare = async () => {
     setSharing(true)
@@ -67,7 +69,7 @@ export default function BookDetailOverlay({ phrase, book, onClose }) {
         <div className="px-6 pt-5 pb-4">
           <h2 className="text-stone-50 text-xl font-medium leading-snug">{book.title}</h2>
           <p className="text-stone-400 text-sm mt-1">{book.author}</p>
-          <p className="text-stone-400 text-sm leading-relaxed font-light mt-4">
+          <p className={`text-stone-400 text-sm leading-relaxed ${phraseWeight} mt-4`}>
             "{phrase.text}"
           </p>
         </div>
