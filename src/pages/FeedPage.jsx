@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import { getFeed, getTags } from '../api/phraseApi'
 import PhraseCard from '../components/PhraseCard'
 import DailyPhrase from '../components/DailyPhrase'
@@ -113,13 +114,24 @@ export default function FeedPage() {
       {/* 헤더 */}
       <header className="sticky top-0 bg-stone-100/80 backdrop-blur-sm z-10 px-6 py-4 border-b border-stone-200">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-medium text-stone-700 tracking-tight">
+          <Link to="/about" className="group">
+            <h1 className="text-lg font-medium text-stone-700 tracking-tight group-hover:text-stone-900 transition-colors">
               O:GU <span className="text-stone-400 font-normal text-sm">(오구, 오늘의 구절)</span>
             </h1>
-            <p className="text-xs text-stone-400 mt-0.5">문구로 책을 발견하세요</p>
-          </div>
+            <p className="text-xs text-stone-400 mt-0.5 group-hover:text-stone-500 transition-colors">문구로 책을 발견하세요</p>
+          </Link>
           <div className="flex items-center gap-2">
+            <Link
+              to="/about"
+              aria-label="서비스 소개"
+              className="flex items-center justify-center w-8 h-8 rounded-full border border-stone-300 text-stone-500 hover:border-stone-400 hover:text-stone-700 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+            </Link>
             <button
               onClick={toggle}
               aria-label="글자 굵기 전환"
