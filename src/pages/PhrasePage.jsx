@@ -96,8 +96,24 @@ export default function PhrasePage() {
         </div>
       </div>
 
-      {/* 브랜딩 */}
+      {/* 브랜딩 + 푸터 링크 */}
       <p className="text-stone-300 text-xs mt-8 tracking-widest">O:GU — 오늘의 구절</p>
+      <nav className="flex gap-3 mt-3 text-[11px] text-stone-400">
+        <Link to="/about" className="hover:text-stone-600 transition-colors">
+          서비스 소개
+        </Link>
+        <span className="text-stone-300">·</span>
+        <Link to="/privacy" className="hover:text-stone-600 transition-colors">
+          개인정보처리방침
+        </Link>
+        <span className="text-stone-300">·</span>
+        <a
+          href="mailto:byoung.mokk@gmail.com"
+          className="hover:text-stone-600 transition-colors"
+        >
+          문의
+        </a>
+      </nav>
     </div>
   )
 }

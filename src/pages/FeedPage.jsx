@@ -3,6 +3,7 @@ import { getFeed, getTags } from '../api/phraseApi'
 import PhraseCard from '../components/PhraseCard'
 import DailyPhrase from '../components/DailyPhrase'
 import TagFilterSheet from '../components/TagFilterSheet'
+import Footer from '../components/Footer'
 import { useReadability } from '../contexts/ReadabilityContext'
 
 function generateSeed() {
@@ -173,6 +174,9 @@ export default function FeedPage() {
           </>
         )}
       </main>
+
+      {/* 푸터 */}
+      <Footer />
 
       {/* 태그 필터 바텀시트 */}
       <TagFilterSheet
